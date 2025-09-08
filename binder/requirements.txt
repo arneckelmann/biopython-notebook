@@ -1,3 +1,2 @@
 biopython==1.83
 xlsxwriter==3.2.5
-ipywidgets==7.6.3
