@@ -103,10 +103,10 @@ if __name__ == "__main__":
 def execute_design(user_inputs):
     
     genbank_info = user_inputs[0].value
-    genbank_file_name = list(genbank_info.keys())[0]
-    genbank_content = genbank_info[genbank_file_name]['content']
-    genbank_bytes = genbank_content.decode('utf-8')
-    genbank_str = StringIO(genbank_bytes)
+    #genbank_file_name = genbank_info[0]['name']
+    genbank_bytes = genbank_info[0]['content']
+    genbank_content = bytes(genbank_bytes).decode("utf-8", errors="replace")
+    genbank_str = StringIO(genbank_content)
     seq_record = list(SeqIO.parse(genbank_str, "genbank"))[0]
     features = seq_record.features
     
@@ -120,9 +120,8 @@ def execute_design(user_inputs):
             label_coord[label] = dna_region
             
     codon_file_info = user_inputs[1].value
-    codon_filename = list(codon_file_info.keys())[0]
-    byte_position_str = codon_file_info[codon_filename]['content']
-    positions = byte_position_str.decode('utf-8')
+    byte_position_str = codon_file_info[0]['content']
+    positions = bytes(byte_position_str).decode("utf-8", errors="replace")
     aa_positions = positions.split("\r\n")
     aa_positions = [int(aa_position) for aa_position in aa_positions]
     nt_position_interval = [[(position*3)+50,(position*3)+53] for position in aa_positions] 
@@ -212,7 +211,7 @@ def design_mutagenesis_primers(ORF_seq,assembly_method, nt_position_interval, co
             full_F_primer_seq = codon_choice + fwd_primer_seed
             full_R_primer_seq = rev_primer_seed
 
-            primer_F_name, primer_R_name = get_primer_names(start,end,nt_position_interval,codon_choice)
+            primer_F_name, primer_R_name = get_primer_names(start,end,nt_position_interval,codon_choice, aa_positions)
             
             f_primer_name_seq.append([primer_F_name,full_F_primer_seq])
             r_primer_name_seq.append([primer_R_name,full_R_primer_seq])
